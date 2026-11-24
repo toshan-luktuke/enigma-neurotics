@@ -1,0 +1,14 @@
+---
+import EditionLayout from '../../layouts/EditionLayout.astro';
+import { getPublishedEditions } from '../../lib/content';
+export async function getStaticPaths() {
+  const entries = await getPublishedEditions();
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry, previous: entries.filter((e) => e.data.date < entry.data.date).slice(0, 3) },
+  }));
+}
+const { entry, previous } = Astro.props;
+---
+
+<EditionLayout entry={entry} previous={previous} />

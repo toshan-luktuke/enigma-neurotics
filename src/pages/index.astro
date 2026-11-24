@@ -1,0 +1,21 @@
+---
+import EditionLayout from '../layouts/EditionLayout.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getPublishedEditions } from '../lib/content';
+const entries = await getPublishedEditions();
+---
+
+{entries[0] ? (
+  <EditionLayout entry={entries[0]} previous={entries.slice(1)} home />
+) : (
+  <SiteLayout>
+    <section class="simple-page shell">
+      <span class="eyebrow">A NEW BEGINNING</span>
+      <h1>Something to look forward to.</h1>
+      <p>Our first discovery is on its way. Come back soon.</p>
+      <a class="text-link" href="/about/">
+        Meet TIL
+      </a>
+    </section>
+  </SiteLayout>
+)}

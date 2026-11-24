@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, readingTime } from '../lib/publication';
+import Icon from './Icon.astro';
+interface Props {
+  entry: CollectionEntry<'discoveries'>;
+}
+const { entry } = Astro.props;
+const icons: Record<string, string> = {
+  Nature: 'plant',
+  Space: 'moon-stars',
+  Technology: 'cpu',
+  Science: 'atom',
+  History: 'hourglass',
+  Culture: 'book-open',
+};
+---
+
+<article
+  class="archive-entry"
+  data-category={entry.data.category}
+  data-search={`${entry.data.title} ${entry.data.summary} ${entry.data.category}`.toLowerCase()}
+>
+  <a class="archive-entry-link" href={`/discoveries/${entry.data.slug}/`}>
+    <span class:list={['entry-symbol', `symbol-${entry.data.category.toLowerCase()}`]}>
+      <Icon name={icons[entry.data.category]} />
+    </span>
+    <div class="entry-content">
+      <div class="entry-meta">
+        <span>{entry.data.category}</span>
+        <span>{readingTime(entry.body)} min read</span>
+      </div>
+      <h3>{entry.data.title}</h3>
+      <p>{entry.data.summary}</p>
+    </div>
+    <div class="entry-end">
+      <time datetime={entry.data.date}>{formatDate(entry.data.date, true)}</time>
+      <Icon name="arrow-up-right" />
+    </div>
+  </a>
+</article>

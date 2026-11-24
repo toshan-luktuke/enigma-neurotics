@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+interface Props {
+  sources: CollectionEntry<'discoveries'>['data']['sources'];
+}
+const { sources } = Astro.props;
+---
+
+<section class="sources" aria-labelledby="source-heading">
+  <div class="section-eyebrow">
+    <Icon name="books" />
+    <h2 id="source-heading">Go a little deeper</h2>
+  </div>
+  <p>Good questions deserve good sources. Here's where this story comes from.</p>
+  <ol>
+    {sources.map((source) => (
+      <li>
+        <a href={source.url}>
+          <span>
+            <small>{source.publisher}</small>
+            <span>{source.title}</span>
+          </span>
+          <Icon name="arrow-up-right" />
+        </a>
+      </li>
+    ))}
+  </ol>
+</section>

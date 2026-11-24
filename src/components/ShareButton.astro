@@ -1,0 +1,52 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  title: string;
+  url: string;
+}
+const { title, url } = Astro.props;
+---
+
+<div class="share-control" data-title={title} data-url={url}>
+  <button type="button" class="text-button share-button" hidden>
+    <Icon name="export" /> Share this discovery
+  </button>
+  <p class="share-feedback" role="status" aria-live="polite"></p>
+  <div class="manual-copy" hidden>
+    <label>
+      Copy this link
+      <input readonly value={url} aria-label="Article link" />
+    </label>
+  </div>
+</div>
+<script>
+  for (const control of document.querySelectorAll<HTMLElement>('.share-control')) {
+    const button = control.querySelector<HTMLButtonElement>('button')!;
+    const feedback = control.querySelector<HTMLElement>('.share-feedback')!;
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      const title = control.dataset.title!;
+      // Local previews share their local origin; production uses the same permanent path.
+      const url = new URL(new URL(control.dataset.url!).pathname, location.origin).href;
+      feedback.textContent = '';
+      control.querySelector<HTMLElement>('.manual-copy')!.hidden = true;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, url });
+          return;
+        }
+        await navigator.clipboard.writeText(url);
+        feedback.textContent = 'Link copied.';
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return;
+        const fallback = control.querySelector<HTMLElement>('.manual-copy')!;
+        const input = fallback.querySelector('input')!;
+        input.value = url;
+        fallback.hidden = false;
+        input.focus();
+        input.select();
+        feedback.textContent = 'You can copy the link below.';
+      }
+    });
+  }
+</script>

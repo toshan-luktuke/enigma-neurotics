@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { readingTime } from '../lib/publication';
+import Icon from './Icon.astro';
+interface Props {
+  entry: CollectionEntry<'discoveries'>;
+}
+const { entry } = Astro.props;
+---
+
+<div class="edition-meta">
+  <span class="category-label">{entry.data.category}</span>
+  <span class="meta-separator">/</span>
+  <span>
+    <Icon name="clock" /> {readingTime(entry.body)} min read
+  </span>
+</div>

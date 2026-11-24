@@ -1,0 +1,71 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<SiteLayout
+  title="A place for curiosity"
+  description="TIL is a daily reading habit for curious people. One short, sourced discovery about the world, every day."
+>
+  <section class="about-page shell">
+    <header class="page-heading">
+      <span class="eyebrow">TODAY I LEARNED</span>
+      <h1>
+        You don't have to know
+        <br />
+        where curiosity leads.
+      </h1>
+      <p>You just need somewhere to start.</p>
+    </header>
+    <div class="about-grid">
+      <div class="about-mark" aria-hidden="true">
+        <Icon name="asterisk-simple" />
+        <span>STAY CURIOUS.</span>
+      </div>
+      <div class="prose">
+        <h2>A few minutes for something new</h2>
+        <p>
+          TIL is a place to learn one interesting thing each day. Something about the natural world,
+          an overlooked piece of history, or an idea that makes an ordinary moment a little more
+          interesting.
+        </p>
+        <p>
+          Each edition starts with a question and gives you enough context to understand the answer.
+          If it catches your attention, the sources are there to take you further.
+        </p>
+        <h2>How stories get here</h2>
+        <p>
+          Topics are chosen and prepared in advance. Everyone sees the same daily edition. We aim to
+          publish each morning at 06:15 India Standard Time. If we miss a day, the latest story
+          stays here with its original date.
+        </p>
+        <h2>Sources, with room for uncertainty</h2>
+        <p>
+          We start with research institutions, museums, original studies, and other sources with
+          relevant expertise. Every edition links to the material behind it. A proposed explanation
+          stays a proposed explanation; a good story shouldn't need a stronger claim than the
+          evidence supports.
+        </p>
+        <h2>Words that earn their place</h2>
+        <p>
+          We review copy for clear explanations and natural language. The editing pass removes
+          filler and checks that a rewrite hasn't changed a fact or dropped an important
+          qualification.
+        </p>
+        <h2>When something needs correcting</h2>
+        <p>
+          Corrections belong in the article. When we change a factual claim, we add a dated
+          correction note explaining what changed. Small spelling and formatting fixes don't need a
+          note.
+        </p>
+        <p>
+          If you spot a problem, open an issue in this site's source repository if you have access,
+          including the article link and a source we can check.
+        </p>
+        <a class="text-link" href="/">
+          Read the latest discovery <Icon name="arrow-right" />
+        </a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

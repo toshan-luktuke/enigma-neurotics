@@ -1,0 +1,118 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ArchiveEntry from '../components/ArchiveEntry.astro';
+import Icon from '../components/Icon.astro';
+import { getPublishedEditions } from '../lib/content';
+const entries = await getPublishedEditions();
+const categories = [...new Set(entries.map((e) => e.data.category))].sort();
+---
+
+<SiteLayout
+  title="The archive"
+  description="A collection of small discoveries. Browse past editions of TIL by topic, or follow a question somewhere new."
+>
+  <section class="archive-page shell">
+    <header class="page-heading">
+      <span class="eyebrow">A GROWING COLLECTION OF GOOD QUESTIONS</span>
+      <h1>Follow your curiosity.</h1>
+      <p>Things you might have missed. Things worth coming back to.</p>
+    </header>
+    <div class="archive-tools" hidden>
+      <div class="search-field">
+        <Icon name="magnifying-glass" />
+        <label class="sr-only" for="archive-search">
+          Search discoveries
+        </label>
+        <input
+          type="search"
+          id="archive-search"
+          placeholder="What's on your mind?"
+          autocomplete="off"
+        />
+        <kbd aria-hidden="true">/</kbd>
+      </div>
+      <div class="category-filters" role="group" aria-label="Filter by category">
+        <button type="button" data-filter="All" aria-pressed="true">
+          All discoveries
+        </button>
+        {categories.map((category) => (
+          <button type="button" data-filter={category} aria-pressed="false">
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+    <div class="archive-list-heading">
+      <span id="result-count" role="status" aria-live="polite">
+        {entries.length} discoveries
+      </span>
+      <span>NEWEST FIRST</span>
+    </div>
+    <div class="archive-list">
+      {entries.map((entry) => (
+        <ArchiveEntry entry={entry} />
+      ))}
+    </div>
+    <div class="empty-results" hidden>
+      <Icon name="binoculars" />
+      <h2>No discoveries here yet.</h2>
+      <p>Try a different word or explore another topic.</p>
+      <button type="button" class="text-button" id="reset-filters">
+        Show all discoveries <Icon name="arrow-right" />
+      </button>
+    </div>
+    {entries.length === 0 && <p>Our first discovery is on its way. Come back soon.</p>}
+  </section>
+</SiteLayout>
+<script>
+  const tools = document.querySelector<HTMLElement>('.archive-tools')!;
+  const search = document.querySelector<HTMLInputElement>('#archive-search')!;
+  const entries = [...document.querySelectorAll<HTMLElement>('.archive-entry')];
+  const filters = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const count = document.querySelector<HTMLElement>('#result-count')!;
+  const empty = document.querySelector<HTMLElement>('.empty-results')!;
+  let category = 'All';
+  tools.hidden = false;
+  function update() {
+    const query = search.value.toLocaleLowerCase().trim();
+    let visible = 0;
+    for (const entry of entries) {
+      const matches =
+        (category === 'All' || entry.dataset.category === category) &&
+        entry.dataset.search!.includes(query);
+      entry.hidden = !matches;
+      if (matches) visible++;
+    }
+    count.textContent = `${visible} ${visible === 1 ? 'discovery' : 'discoveries'}`;
+    empty.hidden = visible !== 0;
+    for (const filter of filters)
+      filter.setAttribute('aria-pressed', String(filter.dataset.filter === category));
+  }
+  search.addEventListener('input', update);
+  filters.forEach((filter) =>
+    filter.addEventListener('click', () => {
+      category = filter.dataset.filter!;
+      update();
+    }),
+  );
+  document.querySelector('#reset-filters')!.addEventListener('click', () => {
+    search.value = '';
+    category = 'All';
+    update();
+    search.focus();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (
+      event.key === '/' &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !(
+        event.target instanceof HTMLElement &&
+        (event.target.matches('input, textarea, select') || event.target.isContentEditable)
+      )
+    ) {
+      event.preventDefault();
+      search.focus();
+    }
+  });
+</script>
